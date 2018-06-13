@@ -10,7 +10,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ramonsl.estoque.Activity.Data.Itens;
+import com.example.ramonsl.estoque.Activity.Data.Item;
 import com.example.ramonsl.estoque.R;
 
 public class DetailsActivity extends AppCompatActivity {
@@ -30,7 +30,7 @@ public class DetailsActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        Itens item = (Itens) intent.getSerializableExtra("item"); // pegando o item passando por paramentro
+        Item item = (Item) intent.getSerializableExtra("item"); // pegando o item passando por paramentro
         mName = findViewById(R.id.txtNameProduct);
         mPreco = findViewById(R.id.txtPreco);
         mQuantidade = findViewById(R.id.txtQuantidade);

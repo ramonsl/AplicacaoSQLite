@@ -3,7 +3,6 @@ package com.example.ramonsl.estoque.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -11,21 +10,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ramonsl.estoque.Activity.Adapter.ItemAdapter;
-import com.example.ramonsl.estoque.Activity.Data.Itens;
+import com.example.ramonsl.estoque.Activity.Banco.DaoItem;
+import com.example.ramonsl.estoque.Activity.Data.Item;
 import com.example.ramonsl.estoque.R;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity  {
 
-
+    TextView txtQuantidade;
     ItemAdapter adapter;
     SearchView mSearchView;
     @Override
@@ -40,7 +38,7 @@ public class MainActivity extends AppCompatActivity  {
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
-        TextView txtQuantidade=findViewById(R.id.txtInfo);
+       txtQuantidade=findViewById(R.id.txtInfo);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,16 +49,25 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
-        ArrayList<Itens> lista = new ArrayList<>();
+/*
+        final DaoItem daoItem= new DaoItem(getApplicationContext());
+
+        ArrayList<Item> lista = daoItem.getAll();
 
         ///itens da listView
-        lista.add(new Itens("Pedra",10,10.0,false));
-        lista.add(new Itens("Pano",1,20.0,false));
-        lista.add(new Itens("Feijão",1,20.0,true));
-        lista.add(new Itens("Feijão",1,20.0,true));
-        lista.add(new Itens("Feijão",1,20.0,true));
+        lista.add(new Item("Pedra",10,10.0,false));
+        lista.add(new Item("Pano",1,20.0,false));
+        lista.add(new Item("Feijão",1,20.0,true));
+        lista.add(new Item("Feijão",1,20.0,true));
+        lista.add(new Item("Feijão",1,20.0,true));
+
+
         txtQuantidade.setText("Quantidade de itens:"+lista.size());
         adapter = new ItemAdapter(getApplicationContext(),lista);
+
+        */
+        refresh();
+
         ListView list=  findViewById(R.id.listaItens);
         list.setAdapter(adapter);
 
@@ -71,7 +78,7 @@ public class MainActivity extends AppCompatActivity  {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Itens item = (Itens) parent.getItemAtPosition(position);
+               Item item = (Item) parent.getItemAtPosition(position);
               Intent intent = new Intent(getApplicationContext(),DetailsActivity.class);
               intent.putExtra("item", item);
                 Toast.makeText(getApplicationContext(), "On clic -", Toast.LENGTH_LONG).show();
@@ -85,20 +92,36 @@ public class MainActivity extends AppCompatActivity  {
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Itens item = (Itens) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), "On Long - " , Toast.LENGTH_LONG).show();
+                Item item = (Item) parent.getItemAtPosition(position);
+                DaoItem daoItem1 = new DaoItem(getApplicationContext());
+                String msg=daoItem1.remove(item);
+                refresh();
+                Toast.makeText(getApplicationContext(), msg , Toast.LENGTH_LONG).show();
                 return false;
             }
         });
 
-
-
-
-
     }
 
 
+    @Override
+    protected void onRestart() {
+        final DaoItem daoItem= new DaoItem(getApplicationContext());
+        refresh();
 
+
+        super.onRestart();
+    }
+
+    private void refresh(){
+        DaoItem daoItem= new DaoItem(getApplicationContext());
+        ArrayList<Item> lista = daoItem.getAll();
+        txtQuantidade.setText("Quantidade de itens:"+lista.size());
+        adapter = new ItemAdapter(getApplicationContext(),lista);
+        ListView list=  findViewById(R.id.listaItens);
+        list.setAdapter(adapter);
+
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_action,menu);

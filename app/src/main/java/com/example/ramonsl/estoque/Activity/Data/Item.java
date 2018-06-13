@@ -2,7 +2,7 @@ package com.example.ramonsl.estoque.Activity.Data;
 
 import java.io.Serializable;
 
-public class Itens  implements Serializable{
+public class Item implements Serializable{
 
     private int mId;
     private String mName;
@@ -30,14 +30,14 @@ public class Itens  implements Serializable{
         return mPerishable;
     }
 
-    public Itens(String mName, int mQtd, double mPrice, boolean mPerishable) {
+    public Item(String mName, int mQtd, double mPrice, boolean mPerishable) {
         this.mName = mName;
         this.mQtd = mQtd;
         this.mPrice = mPrice;
         this.mPerishable = mPerishable;
     }
 
-    public Itens(int mId, String mName, int mQtd, double mPrice, boolean mPerishable) {
+    public Item(int mId, String mName, int mQtd, double mPrice, boolean mPerishable) {
         this.mId = mId;
         this.mName = mName;
         this.mQtd = mQtd;

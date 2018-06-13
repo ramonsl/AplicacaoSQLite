@@ -9,6 +9,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ramonsl.estoque.Activity.Banco.DaoItem;
+import com.example.ramonsl.estoque.Activity.Data.Item;
 import com.example.ramonsl.estoque.R;
 
 public class AddItem extends AppCompatActivity {
@@ -45,7 +47,17 @@ public class AddItem extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_save:{
-                Toast.makeText(getApplicationContext(),"Salvando" + mName.getText(),Toast.LENGTH_LONG).show();
+
+                double preco=Double.valueOf(mPreco.getText().toString());
+                String name= mName.getText().toString();
+                int quantidade=Integer.valueOf( mQuantidade.getText().toString());
+                boolean perecivel=mPerecivel.isChecked();
+
+                Item produto= new Item(name,quantidade,preco,perecivel);
+
+                DaoItem daoItem= new DaoItem(getApplicationContext());
+                String msg=daoItem.save(produto);
+                Toast.makeText(getApplicationContext(),msg + mName.getText(),Toast.LENGTH_LONG).show();
                 onBackPressed();
                 return true;
             }
