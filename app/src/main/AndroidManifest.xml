@@ -16,7 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.DetailsActivity" android:parentActivityName=".Activity.MainActivity"  android:label="Detalhes"/>
-        <activity android:name=".Activity.AddItem" android:parentActivityName=".Activity.MainActivity" android:label="Adicionar"></activity>
+        <activity android:name=".Activity.AddActivity" android:parentActivityName=".Activity.MainActivity" android:label="Adicionar"></activity>
     </application>
 
 </manifest>

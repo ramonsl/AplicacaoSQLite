@@ -7,16 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Switch;
 import android.widget.TextView;
 
-import com.example.ramonsl.estoque.Activity.Data.Itens;
+import com.example.ramonsl.estoque.Activity.Data.Product;
 import com.example.ramonsl.estoque.R;
 
 import java.util.List;
 
-public class ItemAdapter extends ArrayAdapter<Itens> {
-    public ItemAdapter(@NonNull Context context, @NonNull List<Itens> objects) {
+public class ProductAdapter extends ArrayAdapter<Product> {
+    public ProductAdapter(@NonNull Context context, @NonNull List<Product> objects) {
         super(context,  0, objects);
     }
 
@@ -33,7 +32,7 @@ public class ItemAdapter extends ArrayAdapter<Itens> {
 
 
 
-        Itens current =getItem(position);
+        Product current =getItem(position);
 
 
         TextView txtNome= listItemView.findViewById(R.id.txtNameProduct);

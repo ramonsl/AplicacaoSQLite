@@ -10,7 +10,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ramonsl.estoque.Activity.Data.Itens;
+import com.example.ramonsl.estoque.Activity.Banco.DaoProduct;
+import com.example.ramonsl.estoque.Activity.Data.Product;
 import com.example.ramonsl.estoque.R;
 
 public class DetailsActivity extends AppCompatActivity {
@@ -19,7 +20,9 @@ public class DetailsActivity extends AppCompatActivity {
     TextView mName;
     TextView mPreco;
     TextView mQuantidade;
-    Switch mPerecivel;
+    TextView mFornecedor;
+    TextView mFone;
+    Product produto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,16 +33,13 @@ public class DetailsActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        Itens item = (Itens) intent.getSerializableExtra("item"); // pegando o item passando por paramentro
+        produto = (Product) intent.getSerializableExtra("item"); // pegando o item passando por paramentro
         mName = findViewById(R.id.txtNameProduct);
         mPreco = findViewById(R.id.txtPreco);
         mQuantidade = findViewById(R.id.txtQuantidade);
-        mPerecivel= findViewById(R.id.switchPerecivel);
-
-        mName.setText(item.getName());
-        mPreco.setText( String.valueOf(item.getPrice()));
-        mQuantidade.setText( String.valueOf(item.getQtd()));
-        mPerecivel.setChecked(item.isPerishable());
+        mName.setText(produto.getName());
+        mPreco.setText( String.valueOf(produto.getPrice()));
+        mQuantidade.setText( String.valueOf(produto.getQtd()));
 
 
     }
@@ -62,6 +62,19 @@ public class DetailsActivity extends AppCompatActivity {
                 return true;
             }
             case R.id.action_edit:{
+
+
+                DaoProduct daoItem = new DaoProduct(getApplicationContext());
+
+                double preco=Double.valueOf(mPreco.getText().toString());
+                String nome=mName.getText().toString();
+                int quantidade= Integer.valueOf(mQuantidade.getText().toString());
+                String fornecedor= mFornecedor.getText().toString();
+                String fone= mFone.getText().toString();
+                Product newItem = new Product(nome,quantidade,preco,fornecedor,fone);
+
+                daoItem.update(produto,newItem);
+
                 Toast.makeText(getApplicationContext(),"Editando" + mName.getText(),Toast.LENGTH_LONG).show();
                 onBackPressed();//apos realizar algo volta para active anetrior
 

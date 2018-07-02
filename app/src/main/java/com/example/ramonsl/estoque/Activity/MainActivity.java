@@ -2,78 +2,74 @@ package com.example.ramonsl.estoque.Activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ramonsl.estoque.Activity.Adapter.ItemAdapter;
-import com.example.ramonsl.estoque.Activity.Data.Itens;
+import com.example.ramonsl.estoque.Activity.Adapter.productAdapter;
+import com.example.ramonsl.estoque.Activity.Banco.DaoProduct;
+import com.example.ramonsl.estoque.Activity.Data.Product;
 import com.example.ramonsl.estoque.R;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
 
-    ItemAdapter adapter;
+    productAdapter adapter;
     SearchView mSearchView;
+    TextView txtQuantidade;
+    ListView list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 
-
-        Toolbar myToolbar =  findViewById(R.id.my_toolbar);
-          setSupportActionBar(myToolbar);
+        Toolbar myToolbar = findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
-        TextView txtQuantidade=findViewById(R.id.txtInfo);
+        txtQuantidade = findViewById(R.id.txtInfo);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(getApplicationContext(),AddItem.class);
+                Intent intent = new Intent(getApplicationContext(), AddActivity.class);
                 startActivity(intent);
 
             }
         });
 
-        ArrayList<Itens> lista = new ArrayList<>();
+        final DaoProduct dao = new DaoProduct(getApplicationContext());
+        //  dao.getAll();
+       // ArrayList<Product> lista = dao.getAll();
 
-        ///itens da listView
-        lista.add(new Itens("Pedra",10,10.0,false));
-        lista.add(new Itens("Pano",1,20.0,false));
-        lista.add(new Itens("Feijão",1,20.0,true));
-        lista.add(new Itens("Feijão",1,20.0,true));
-        lista.add(new Itens("Feijão",1,20.0,true));
-        txtQuantidade.setText("Quantidade de itens:"+lista.size());
-        adapter = new ItemAdapter(getApplicationContext(),lista);
-        ListView list=  findViewById(R.id.listaItens);
-        list.setAdapter(adapter);
+        //txtQuantidade.setText("Quantidade de itens:" + lista.size());
+        //adapter = new productAdapter(getApplicationContext(), lista);
+       list= findViewById(R.id.listaItens);
+        //list.setAdapter(adapter);
 
-
+        refreshAdapter();
 
 
 ///quando clicar sobre um item
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-               Itens item = (Itens) parent.getItemAtPosition(position);
-              Intent intent = new Intent(getApplicationContext(),DetailsActivity.class);
-              intent.putExtra("item", item);
+                Product item = (Product) parent.getItemAtPosition(position);
+                Intent intent = new Intent(getApplicationContext(), DetailsActivity.class);
+                intent.putExtra("item", item);
                 Toast.makeText(getApplicationContext(), "On clic -", Toast.LENGTH_LONG).show();
                 startActivity(intent);
 
@@ -85,23 +81,22 @@ public class MainActivity extends AppCompatActivity  {
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Itens item = (Itens) parent.getItemAtPosition(position);
-                Toast.makeText(getApplicationContext(), "On Long - " , Toast.LENGTH_LONG).show();
+                Product item = (Product) parent.getItemAtPosition(position);
+                DaoProduct daoItem = new DaoProduct(getApplicationContext());
+                String resposta = daoItem.remove(item);
+                Toast.makeText(getApplicationContext(), resposta, Toast.LENGTH_LONG).show();
+                refreshAdapter();
                 return false;
             }
         });
 
 
-
-
-
     }
-
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_action,menu);
+        getMenuInflater().inflate(R.menu.menu_action, menu);
         mSearchView = (SearchView) menu.findItem(R.id.search)
                 .getActionView();
         mSearchView.setQueryHint("Digite sua busca");
@@ -112,6 +107,7 @@ public class MainActivity extends AppCompatActivity  {
                 Toast.makeText(getApplicationContext(), "Digitando - " + query, Toast.LENGTH_LONG).show();
                 return true;
             }
+
             @Override
             public boolean onQueryTextChange(String newText) {
                 Toast.makeText(getApplicationContext(), "Enviado - " + newText, Toast.LENGTH_LONG).show();
@@ -123,6 +119,26 @@ public class MainActivity extends AppCompatActivity  {
         return true;
     }
 
+    @Override
+    protected void onRestart() {
+        refreshAdapter();
+        super.onRestart();
+    }
 
+    private void refreshAdapter() {
+        DaoProduct dao = new DaoProduct(getApplicationContext());
+        ArrayList<Product> lista = dao.getAll();
 
+        if (lista.size() == 0) {
+            txtQuantidade.setText("adicione itens ao inventario  clicando no + ");
+
+        } else {
+            txtQuantidade.setText("Quantidade de itens:" + lista.size());
+
+        }
+
+        adapter = new productAdapter(getApplicationContext(), lista);
+        list = findViewById(R.id.listaItens);
+        list.setAdapter(adapter);
+    }
 }
